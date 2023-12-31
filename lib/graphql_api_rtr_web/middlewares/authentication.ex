@@ -14,7 +14,6 @@ defmodule GraphqlApiRtrWeb.Middlewares.Authentication do
     end
   end
 
-  # This matches on what is pushed in the subscription tests
   if Mix.env() === :test do
     def call(%{context: %{pubsub: GraphqlApiRtrWeb.Endpoint}} = resolution, _) do
       resolution
