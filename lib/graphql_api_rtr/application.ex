@@ -8,10 +8,17 @@ defmodule GraphqlApiRtr.Application do
   @impl true
   @spec start(any, any) :: {:error, any} | {:ok, pid}
   def start(_type, _args) do
+    topologies = [
+      example: [
+        strategy: Cluster.Strategy.Epmd,
+        config: [hosts: [:node_a@localhost, :node_b@localhost]]
+      ]
+    ]
 
     GraphqlApiRtr.HitCounter.setup_counter()
 
     children = [
+      {Cluster.Supervisor, [topologies, [name: GraphqlApiRtr.ClusterSupervisor]]},
       # Start the Telemetry supervisor
       GraphqlApiRtrWeb.Telemetry,
       {Phoenix.PubSub, name: GraphqlApiRtr.PubSub},
@@ -27,6 +34,17 @@ defmodule GraphqlApiRtr.Application do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: GraphqlApiRtr.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  if Mix.env() === :test do
+    def pipeline, do: []
+  else
+    def pipeline do
+      [
+        {GraphqlApiRtr.Pipeline.Producer, self()},
+        {GraphqlApiRtr.Pipeline.ConsumerSupervisor, self()}
+      ]
+    end
   end
 
   # Tell Phoenix to update the endpoint configuration

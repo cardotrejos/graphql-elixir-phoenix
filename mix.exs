@@ -44,6 +44,8 @@ defmodule GraphqlApiRtr.MixProject do
       {:absinthe, "~> 1.7.5"},
       {:absinthe_plug, "~> 1.5.8"},
       {:absinthe_phoenix, "~> 2.0.2"},
+      {:libcluster, "~> 3.3.3"},
+      {:gen_stage, "~> 1.2.1"},
 
       {:ecto_sql, "~> 3.10.2"},
       {:postgrex,"~> 0.17.3" },

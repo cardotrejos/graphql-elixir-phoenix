@@ -15,4 +15,8 @@ defmodule GraphqlApiRtr.Config do
   def token_max_age do
     Application.fetch_env!(@app, :token_max_age)
   end
+
+  def producer_sleep_time do
+    Application.fetch_env!(@app, :producer_sleep_time)
+  end
 end

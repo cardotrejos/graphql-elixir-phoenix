@@ -13,7 +13,8 @@ config :graphql_api_rtr,
   username: "postgres",
   hostname: "localhost",
   secret_key: "ThisIsAReallySecretKeySecureAndReliable",
-  token_max_age: %{unit: :hour, amount: 24}
+  token_max_age: %{unit: :hour, amount: 24},
+  producer_sleep_time: 10_000
 
 config :ecto_shorts,
   repo: GraphqlApiRtr.Repo,
@@ -31,7 +32,6 @@ config :graphql_api_rtr, GraphqlApiRtrWeb.Endpoint,
   ],
   pubsub_server: GraphqlApiRtr.PubSub,
   live_view: [signing_salt: "13Zl8Tw8"]
-
 
 # Configures the mailer
 #
