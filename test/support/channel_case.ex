@@ -11,7 +11,7 @@ defmodule GraphqlApiRtrWeb.ChannelCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use GraphqlApiWeb.ChannelCase, async: true`, although
+  by setting `use GraphqlApiRtrWeb.ChannelCase, async: true`, although
   this option is not recommended for other databases.
   """
 
