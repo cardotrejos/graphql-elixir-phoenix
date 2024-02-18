@@ -7,7 +7,6 @@ defmodule GraphqlApiRtr.Pipeline.Helpers do
     %{token: generate_token(), timestamp: DateTime.utc_now()}
   end
 
-  @spec update_needed?(non_neg_integer) :: boolean
   def update_needed?(id) do
     case TokenCache.get(id) do
       %{timestamp: timestamp} -> check_expired(timestamp)
@@ -15,7 +14,6 @@ defmodule GraphqlApiRtr.Pipeline.Helpers do
     end
   end
 
-  @spec maybe_send_sync(pid) :: :sync
   @doc """
   Provides a synchronization point for testing GenServers.
   Sends a message in test and noops in other environments

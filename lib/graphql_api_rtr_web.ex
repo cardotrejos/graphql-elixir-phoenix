@@ -18,11 +18,11 @@ defmodule GraphqlApiRtrWeb do
   """
   def controller do
     quote do
-      use Phoenix.Controller, namespace: GraphqlApiWeb
+      use Phoenix.Controller, namespace: GraphqlApiRtrWeb
 
       import Plug.Conn
-      import GraphqlApiWeb.Gettext
-      alias GraphqlApiWeb.Router.Helpers, as: Routes
+      import GraphqlApiRtrWeb.Gettext
+      alias GraphqlApiRtrWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -30,7 +30,7 @@ defmodule GraphqlApiRtrWeb do
     quote do
       use Phoenix.View,
         root: "lib/graphql_api_web/templates",
-        namespace: GraphqlApiWeb
+        namespace: GraphqlApiRtrWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller,

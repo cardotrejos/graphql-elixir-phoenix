@@ -3,7 +3,7 @@ defmodule GraphqlApiRtr.UserFixtures do
   This module defines test helpers for creating
   entities via the `GraphqlApiRtr.Accounts` context.
   """
-  alias GraphqlApiRtr.{Accounts}
+  alias GraphqlApiRtr.{Accounts, TokenCache}
 
   @valid_user_params %{name: "Harry", email: "email@example.com"}
 
@@ -17,4 +17,10 @@ defmodule GraphqlApiRtr.UserFixtures do
 
     %{user: user}
   end
+
+  def cache_entry(%{user: %{id: id}}) do
+    cache_entry = TokenCache.put(id, %{token: "FakeToken", timestamp: DateTime.utc_now()})
+    %{cache_entry: cache_entry}
+  end
+
 end

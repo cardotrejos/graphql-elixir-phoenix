@@ -2,6 +2,8 @@ defmodule GraphqlApiRtrWeb.Schema do
   use Absinthe.Schema
   alias GraphqlApiRtrWeb.Middlewares.{Authentication, HandleErrors}
 
+  import_types GraphqlApiRtrWeb.Types.AuthToken
+  import_types GraphqlApiRtrWeb.Types.Custom
   import_types GraphqlApiRtrWeb.Types.Preference
   import_types GraphqlApiRtrWeb.Types.User
   import_types GraphqlApiRtrWeb.Types.Request
@@ -9,12 +11,15 @@ defmodule GraphqlApiRtrWeb.Schema do
   import_types GraphqlApiRtrWeb.Schema.Queries.Preference
   import_types GraphqlApiRtrWeb.Schema.Queries.User
   import_types GraphqlApiRtrWeb.Schema.Queries.ResolverHit
+  import_types GraphqlApiRtrWeb.Schema.Queries.AuthToken
   import_types GraphqlApiRtrWeb.Schema.Mutations.Preference
   import_types GraphqlApiRtrWeb.Schema.Mutations.User
+  import_types GraphqlApiRtrWeb.Schema.Subscriptions.AuthToken
   import_types GraphqlApiRtrWeb.Schema.Subscriptions.Preference
   import_types GraphqlApiRtrWeb.Schema.Subscriptions.User
 
   query do
+    import_fields :auth_token_queries
     import_fields :preference_queries
     import_fields :user_queries
     import_fields :resolver_hit_queries
@@ -26,6 +31,7 @@ defmodule GraphqlApiRtrWeb.Schema do
   end
 
   subscription do
+    import_fields :auth_token_subscriptions
     import_fields :preference_subscriptions
     import_fields :user_subscriptions
   end

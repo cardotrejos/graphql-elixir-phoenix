@@ -9,10 +9,15 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
-## Learn more
+## Run the app on 2 nodes
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+Run 
+
+```
+iex --sname node_a@localhost -S mix phx.server
+```
+in the first terminal.
+
+In the second terminal, run
+```
+PORT=4001 iex --sname node_b@localhost -S mix phx.server

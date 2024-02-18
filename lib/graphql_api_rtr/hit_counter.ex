@@ -12,6 +12,7 @@ defmodule GraphqlApiRtr.HitCounter do
     :update_user_preferences,
     :create_user,
     :update_user,
+    :auth_token,
     :test_request
   ]
 
@@ -24,6 +25,7 @@ defmodule GraphqlApiRtr.HitCounter do
     :user,
     :create_user,
     :update_user,
+    :auth_token,
     :test_request
   ]
 

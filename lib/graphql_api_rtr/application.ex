@@ -27,8 +27,9 @@ defmodule GraphqlApiRtr.Application do
       {Finch, name: GraphqlApiRtr.Finch},
       # Start a worker by calling: GraphqlApiRtr.Worker.start_link(arg)
       # {GraphqlApiRtr.Worker, arg}
-      GraphqlApiRtr.Repo
-    ]
+      GraphqlApiRtr.Repo,
+      GraphqlApiRtr.TokenCache
+    ] ++ pipeline()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

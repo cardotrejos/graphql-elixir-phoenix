@@ -1,13 +1,14 @@
 defmodule GraphqlApiRtrWeb.Schema.Queries.UserTest do
   use GraphqlApiRtr.DataCase, async: true
 
-  import GraphqlApiRtr.UserFixtures, only: [user: 1]
+  import GraphqlApiRtr.UserFixtures, only: [user: 1, cache_entry: 1]
   alias GraphqlApiRtr.Accounts
   alias GraphqlApiRtrWeb.Schema
 
   @valid_preference_params %{likes_emails: false, likes_phone_calls: false, likes_faxes: false}
+  @auth_token "FakeToken"
 
-  setup [:user]
+  setup [:user, :cache_entry]
 
   @all_users_doc """
   query Users($likesEmails: Boolean, $likesPhoneCalls: Boolean, $likesFaxes: Boolean, $name: String, $before: Int, $after: Int, $first: Int ) {
@@ -15,6 +16,11 @@ defmodule GraphqlApiRtrWeb.Schema.Queries.UserTest do
       id
       name
       email
+      auth_token {
+        user_id
+        token
+        timestamp
+      }
       preferences {
         id
         user_id
@@ -39,6 +45,10 @@ defmodule GraphqlApiRtrWeb.Schema.Queries.UserTest do
                        "id" => ^user_id,
                        "name" => ^name,
                        "email" => ^email,
+                       "auth_token" => %{
+                         "user_id" => ^user_id,
+                         "token" => @auth_token
+                       },
                        "preferences" => %{
                          "likes_emails" => false,
                          "likes_faxes" => false,
@@ -74,6 +84,7 @@ defmodule GraphqlApiRtrWeb.Schema.Queries.UserTest do
                       "email" => "spirit@skull.com",
                       "id" => ^user2_id,
                       "name" => "Bob",
+                      "auth_token" => nil,
                       "preferences" => %{
                         "likes_emails" => false,
                         "likes_faxes" => false,
@@ -104,6 +115,11 @@ defmodule GraphqlApiRtrWeb.Schema.Queries.UserTest do
      id
      name
      email
+     auth_token {
+      user_id
+      token
+      timestamp
+     }
     preferences {
       id
       user_id
@@ -127,6 +143,10 @@ defmodule GraphqlApiRtrWeb.Schema.Queries.UserTest do
                      "id" => ^user_id,
                      "name" => ^name,
                      "email" => ^email,
+                     "auth_token" => %{
+                       "user_id" => ^user_id,
+                       "token" => @auth_token
+                     },
                      "preferences" => %{
                        "likes_emails" => false,
                        "likes_faxes" => false,
@@ -150,6 +170,10 @@ defmodule GraphqlApiRtrWeb.Schema.Queries.UserTest do
                      "id" => ^user_id,
                      "name" => ^name,
                      "email" => ^email,
+                     "auth_token" => %{
+                       "user_id" => ^user_id,
+                       "token" => @auth_token
+                     },
                      "preferences" => %{
                        "user_id" => ^user_id,
                        "likes_emails" => false,
