@@ -50,7 +50,8 @@ defmodule GraphqlApiRtr.MixProject do
       {:ecto_sql, "~> 3.10.2"},
       {:postgrex,"~> 0.17.3" },
       {:dataloader, "~> 1.0.0"},
-      {:ecto_shorts, "~> 2.3.0"}
+      {:ecto_shorts, "~> 2.3.0"},
+      {:prometheus_telemetry, "~> 0.4"}
     ]
   end
 

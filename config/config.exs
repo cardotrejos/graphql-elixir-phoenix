@@ -7,21 +7,19 @@
 # General application configuration
 import Config
 
-config :graphql_api_rtr,
-  ecto_repos: [GraphqlApiRtr.Repo],
+config :graphql_api_rtr, GraphqlApiRtr.Repo,
   database: "graphql_api_rtr_repo",
   username: "postgres",
-  hostname: "localhost",
-  secret_key: "ThisIsAReallySecretKeySecureAndReliable",
-  token_max_age: %{unit: :hour, amount: 24},
-  producer_sleep_time: 10_000
+  hostname: "localhost"
 
 config :ecto_shorts,
   repo: GraphqlApiRtr.Repo,
   error_module: EctoShorts.Actions.Error
 
 config :graphql_api_rtr,
-  ecto_repos: [GraphqlApiRtr.Repo]
+  ecto_repos: [GraphqlApiRtr.Repo],
+  secret_key: "ThisIsAReallySecretKeySecureAndReliable",
+  token_max_age: %{unit: :hour, amount: 24}
 
 # Configures the endpoint
 config :graphql_api_rtr, GraphqlApiRtrWeb.Endpoint,

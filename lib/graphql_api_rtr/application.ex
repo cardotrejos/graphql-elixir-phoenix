@@ -17,19 +17,31 @@ defmodule GraphqlApiRtr.Application do
 
     GraphqlApiRtr.HitCounter.setup_counter()
 
-    children = [
-      {Cluster.Supervisor, [topologies, [name: GraphqlApiRtr.ClusterSupervisor]]},
-      # Start the Telemetry supervisor
-      GraphqlApiRtrWeb.Telemetry,
-      {Phoenix.PubSub, name: GraphqlApiRtr.PubSub},
-      GraphqlApiRtrWeb.Endpoint,
-      {Absinthe.Subscription, GraphqlApiRtrWeb.Endpoint},
-      {Finch, name: GraphqlApiRtr.Finch},
-      # Start a worker by calling: GraphqlApiRtr.Worker.start_link(arg)
-      # {GraphqlApiRtr.Worker, arg}
-      GraphqlApiRtr.Repo,
-      GraphqlApiRtr.TokenCache
-    ] ++ pipeline()
+    children =
+      [
+        {Cluster.Supervisor, [topologies, [name: GraphqlApiRtr.ClusterSupervisor]]},
+        # Start the Telemetry supervisor
+        GraphqlApiRtrWeb.Telemetry,
+        {Phoenix.PubSub, name: GraphqlApiRtr.PubSub},
+        GraphqlApiRtrWeb.Endpoint,
+        {Absinthe.Subscription, GraphqlApiRtrWeb.Endpoint},
+        {Finch, name: GraphqlApiRtr.Finch},
+        # Start a worker by calling: GraphqlApiRtr.Worker.start_link(arg)
+        # {GraphqlApiRtr.Worker, arg}
+        GraphqlApiRtr.Repo,
+        GraphqlApiRtr.TokenCache,
+        {PrometheusTelemetry,
+         exporter: [enabled?: true],
+         metrics: [
+           PrometheusTelemetry.Metrics.Ecto.metrics(:graphql_api_rtr),
+           PrometheusTelemetry.Metrics.Cowboy.metrics(),
+           PrometheusTelemetry.Metrics.Swoosh.metrics(),
+           PrometheusTelemetry.Metrics.Finch.metrics(),
+           PrometheusTelemetry.Metrics.Phoenix.metrics(),
+           PrometheusTelemetry.Metrics.GraphQL.metrics(),
+           PrometheusTelemetry.Metrics.VM.metrics()
+         ]}
+      ] ++ pipeline()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
