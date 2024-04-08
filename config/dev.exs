@@ -1,11 +1,17 @@
 import Config
 
-# For development, we disable any cache and enable
-# debugging and code reloading.
-#
-# The watchers configuration can be used to run external
-# watchers to your application. For example, we can use it
-# to bundle .js and .css sources.
+
+# Configure your database
+config :graphql_api_rtr, GraphqlApiRtr.Repo,
+  username: "postgres",
+  hostname: "localhost",
+  database: "graphql_api_rtr_repo",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
+port = String.to_integer(System.get_env("PORT") || "4000")
+
+
 config :graphql_api_rtr, GraphqlApiRtrWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
