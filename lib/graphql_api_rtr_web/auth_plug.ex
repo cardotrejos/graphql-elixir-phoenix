@@ -1,6 +1,6 @@
 defmodule GraphqlApiRtrWeb.AuthPlug do
   @moduledoc """
-  Implements authentication for mutations via the http header.
+  Implements authentication for mutations via the Authorization header.
   """
   @behaviour Plug
 
@@ -9,12 +9,11 @@ defmodule GraphqlApiRtrWeb.AuthPlug do
   def init(opts), do: opts
 
   def call(conn, _) do
-    case get_req_header(conn, "authentication") do
-      [] ->
+    case get_req_header(conn, "authorization") do
+      ["Bearer " <> secret_key] ->
+        Absinthe.Plug.put_options(conn, context: %{secret_key: secret_key})
+      _ ->
         conn
-
-      secret_key ->
-        Absinthe.Plug.put_options(conn, context: %{secret_key: List.first(secret_key)})
     end
   end
 end
