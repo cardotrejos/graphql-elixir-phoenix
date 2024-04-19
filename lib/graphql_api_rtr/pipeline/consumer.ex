@@ -5,7 +5,6 @@ defmodule GraphqlApiRtr.Pipeline.Consumer do
 
   alias GraphqlApiRtr.{Pipeline.Helpers, TokenCache}
 
-  @spec start_link(pid, non_neg_integer()) :: {:ok, pid}
   def start_link(caller, user_id) do
     Task.start_link(fn ->
       handle_event(caller, user_id)

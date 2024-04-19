@@ -2,7 +2,6 @@ defmodule GraphqlApiRtr.Pipeline.ConsumerSupervisor do
   @moduledoc false
   use ConsumerSupervisor
 
-  @spec start_link(pid) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(caller) when is_pid(caller) do
     ConsumerSupervisor.start_link(__MODULE__, caller)
   end

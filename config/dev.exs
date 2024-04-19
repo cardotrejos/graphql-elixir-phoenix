@@ -19,7 +19,7 @@ config :graphql_api_rtr, GraphqlApiRtrWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "pzASRc+NyToSuc9X8o+9KYtVemXK842pKi5iQmpjfD3q3BM09CUdsYJ1bKpx76+I",
+  secret_key_base: "YLzkiUbLsQ1FuLZSIQiIrYB8V+hGgJKsRBznWIqLjsH53tPLMCYo60ZEOP5d7h91",
   watchers: []
 
 # ## SSL Support

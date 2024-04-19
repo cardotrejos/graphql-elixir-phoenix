@@ -4,7 +4,15 @@ defmodule GraphqlApiRtr.Pipeline.Helpers do
   @token_max_age Config.token_max_age()
 
   def token_and_timestamp_map do
-    %{token: generate_token(), timestamp: DateTime.utc_now()}
+    start_time = System.monotonic_time()
+    token = generate_token()
+    timestamp = DateTime.utc_now()
+    duration_seconds = (System.monotonic_time() - start_time) / 1_000_000_000
+
+    :telemetry.execute([:graphql_api_rtr, :metrics, :auth_token, :generation_count], %{count: 1})
+    :telemetry.execute([:graphql_api_rtr, :metrics, :auth_token, :generation_duration], %{duration: duration_seconds})
+
+    %{token: token, timestamp: timestamp}
   end
 
   def update_needed?(id) do

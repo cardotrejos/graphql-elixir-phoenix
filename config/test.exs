@@ -12,7 +12,7 @@ config :graphql_api_rtr, GraphqlApiRtr.Repo,
 
 config :graphql_api_rtr, GraphqlApiRtrWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "VTWW/uBf0lzCtuiDxx5PRoocI1FADezgKsRwsgDlOBmt1zbiTDDlr34PSnpaLgiZ",
+  secret_key_base: "YLzkiUbLsQ1FuLZSIQiIrYB8V+hGgJKsRBznWIqLjsH53tPLMCYo60ZEOP5d7h91",
   server: false
 
 # Disable swoosh api client as it is only required for production adapters.
