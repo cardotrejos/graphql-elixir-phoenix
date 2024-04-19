@@ -39,7 +39,8 @@ defmodule GraphqlApiRtr.Application do
            PrometheusTelemetry.Metrics.Finch.metrics(),
            PrometheusTelemetry.Metrics.Phoenix.metrics(),
            PrometheusTelemetry.Metrics.GraphQL.metrics(),
-           PrometheusTelemetry.Metrics.VM.metrics()
+           PrometheusTelemetry.Metrics.VM.metrics(),
+           GraphqlApiRtr.Metrics.AuthToken.metrics()
          ]}
       ] ++ pipeline()
 
