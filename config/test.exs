@@ -15,6 +15,10 @@ config :graphql_api_rtr, GraphqlApiRtrWeb.Endpoint,
   secret_key_base: "YLzkiUbLsQ1FuLZSIQiIrYB8V+hGgJKsRBznWIqLjsH53tPLMCYo60ZEOP5d7h91",
   server: false
 
+config :graphql_api_rtr, GraphqlApiRtr.RedisCache,
+  host: "localhost",
+  port: 6379
+
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 

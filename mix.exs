@@ -46,12 +46,16 @@ defmodule GraphqlApiRtr.MixProject do
       {:absinthe_phoenix, "~> 2.0.2"},
       {:libcluster, "~> 3.3.3"},
       {:gen_stage, "~> 1.2.1"},
+      {:request_cache_plug, "~> 1.0"},
+      {:redix, "~> 1.1"},
+      {:castore, ">= 0.0.0"},
 
       {:ecto_sql, "~> 3.10.2"},
       {:postgrex,"~> 0.17.3" },
       {:dataloader, "~> 1.0.0"},
       {:ecto_shorts, "~> 2.3.0"},
       {:prometheus_telemetry, "~> 0.4"}
+
     ]
   end
 

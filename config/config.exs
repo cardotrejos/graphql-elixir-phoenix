@@ -27,6 +27,8 @@ config :graphql_api_rtr, GraphqlApiRtrWeb.Endpoint,
   pubsub_server: GraphqlApiRtr.PubSub,
   live_view: [signing_salt: "13Zl8Tw8"]
 
+config :request_cache_plug, request_cache_module: GraphqlApiRtr.RedisCache
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

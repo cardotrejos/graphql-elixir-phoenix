@@ -9,6 +9,10 @@ config :graphql_api_rtr, GraphqlApiRtr.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
+config :graphql_api_rtr, GraphqlApiRtr.RedisCache,
+  host: "localhost",
+  port: 6379
+
 port = String.to_integer(System.get_env("PORT") || "4000")
 
 

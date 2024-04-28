@@ -30,6 +30,7 @@ defmodule GraphqlApiRtr.Application do
         # {GraphqlApiRtr.Worker, arg}
         GraphqlApiRtr.Repo,
         GraphqlApiRtr.TokenCache,
+        GraphqlApiRtr.RedisCache,
         {PrometheusTelemetry,
          exporter: [enabled?: true],
          metrics: [

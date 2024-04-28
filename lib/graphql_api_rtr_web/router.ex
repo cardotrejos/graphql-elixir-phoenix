@@ -4,6 +4,7 @@ defmodule GraphqlApiRtrWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug GraphqlApiRtrWeb.AuthPlug
+    plug RequestCache.Plug
   end
 
   scope "/" do
