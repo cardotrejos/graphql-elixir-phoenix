@@ -1,53 +1,74 @@
 defmodule GraphqlApiRtr.RedisCache do
-  require Logger
   use GenServer
+  require Logger
 
+  # Starts the GenServer with Redis connection
   def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+    GenServer.start_link(__MODULE__, opts)
   end
 
-  def child_spec(opts) do
-    %{
-      id: __MODULE__,
-      start: {__MODULE__, :start_link, [opts]},
-      type: :worker,
-      restart: :permanent,
-      shutdown: 500
-    }
-  end
-
+  # GenServer callback to initialize the state
   @impl true
   def init(opts) do
-    redis_opts = Application.get_env(:graphql_api_rtr, __MODULE__)
-    {:ok, conn} = Redix.start_link(redis_opts)
-    {:ok, %{conn: conn}}
+    redis_opts = opts[:redis_opts] || Application.get_env(:graphql_api_rtr, __MODULE__)
+    case Redix.start_link(redis_opts) do
+      {:ok, conn} ->
+        {:ok, %{conn: conn}}
+      {:error, _reason} ->
+        {:stop, :failed_to_connect}
+    end
   end
 
-  def get(key) do
+  # Public API to set a value
+  def set(pid, key, value) do
+    GenServer.call(pid, {:set, key, value})
+  end
+
+  # Public API to get a value
+  def get(pid, key) do
+    GenServer.call(pid, {:get, key})
+  end
+
+  # Public API to put a value with TTL
+  def put(pid, key, ttl, value) do
+    GenServer.call(pid, {:put, key, ttl, value})
+  end
+
+  # Server-side handling of set command
+  @impl true
+  def handle_call({:set, key, value}, _from, state) do
+    result = Redix.command(state.conn, ["SET", key, value])
+    {:reply, result, state}
+  end
+
+  # Server-side handling of get command
+  @impl true
+  def handle_call({:get, key}, _from, state) do
     start_time = System.monotonic_time()
-    result = case Redix.command(conn(), ["GET", key]) do
-      {:ok, nil} -> nil
-      {:ok, value} -> :erlang.binary_to_term(value)
-    end
+    result = handle_redis_get(state.conn, key)
     duration = System.monotonic_time() - start_time
     :telemetry.execute([:my_app, :cache, :get], %{duration: duration}, %{key: key})
-    result
+    {:reply, result, state}
   end
 
-  def put(key, ttl, value) do
+  # Server-side handling of put command
+  @impl true
+  def handle_call({:put, key, ttl, value}, _from, state) do
     start_time = System.monotonic_time()
-    result = Redix.command(conn(), ["SETEX", key, ttl, :erlang.term_to_binary(value)])
+    result = Redix.command(state.conn, ["SET", key, value, "EX", ttl])
     duration = System.monotonic_time() - start_time
     :telemetry.execute([:my_app, :cache, :put], %{duration: duration}, %{key: key})
-    result
+    {:reply, result, state}
   end
 
-  defp conn do
-    GenServer.call(__MODULE__, :get_conn)
-  end
-
-  @impl true
-  def handle_call(:get_conn, _from, state) do
-    {:reply, state.conn, state}
+  # Helper function to handle Redis GET command with telemetry
+  defp handle_redis_get(conn, key) do
+    case Redix.command(conn, ["GET", key]) do
+      {:ok, nil} -> nil
+      {:ok, value} -> value
+      {:error, reason} ->
+        Logger.error("Failed to get key #{key} from Redis: #{inspect(reason)}")
+        nil
+    end
   end
 end

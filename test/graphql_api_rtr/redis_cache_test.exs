@@ -1,37 +1,35 @@
 defmodule GraphqlApiRtr.RedisCacheTest do
   use ExUnit.Case
 
-  setup_all do
-    # Stop the GraphqlApiRtr.RedisCache process if it's already running
-    if Process.whereis(GraphqlApiRtr.RedisCache) do
-      GenServer.stop(GraphqlApiRtr.RedisCache)
-    end
+  alias GraphqlApiRtr.RedisCache
 
-    # Start the GraphqlApiRtr.RedisCache process for testing
-    start_supervised!(GraphqlApiRtr.RedisCache)
-    :ok
+  # Setup block for each test to ensure isolated environment
+  setup do
+    # Start a new RedisCache process for each test to ensure isolation
+    {:ok, pid} = RedisCache.start_link(redis_opts: [host: "localhost"])
+    {:ok, pid: pid}
   end
 
-  describe "get/1" do
-    test "returns nil when key does not exist" do
-      assert GraphqlApiRtr.RedisCache.get("nonexistent_key") == nil
+  describe "get/2" do
+    test "returns nil when key does not exist", %{pid: pid} do
+      assert RedisCache.get(pid, "nonexistent_key") == nil
     end
 
-    test "returns the cached value when key exists" do
+    test "returns the cached value when key exists", %{pid: pid} do
       key = "test_key"
-      value = %{foo: "bar"}
-      GraphqlApiRtr.RedisCache.put(key, 3600, value)
-      assert GraphqlApiRtr.RedisCache.get(key) == value
+      value = "bar"
+      RedisCache.put(pid, key, 3600, value)
+      assert RedisCache.get(pid, key) == value
     end
   end
 
-  describe "put/3" do
-    test "stores the value in cache with the specified TTL" do
+  describe "put/4" do
+    test "stores the value in cache with the specified TTL", %{pid: pid} do
       key = "test_key"
-      value = %{foo: "bar"}
+      value = "bar"
       ttl = 3600
-      GraphqlApiRtr.RedisCache.put(key, ttl, value)
-      assert GraphqlApiRtr.RedisCache.get(key) == value
+      RedisCache.put(pid, key, ttl, value)
+      assert RedisCache.get(pid, key) == value
     end
   end
 end
