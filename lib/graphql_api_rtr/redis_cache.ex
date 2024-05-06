@@ -11,9 +11,11 @@ defmodule GraphqlApiRtr.RedisCache do
   @impl true
   def init(opts) do
     redis_opts = opts[:redis_opts] || Application.get_env(:graphql_api_rtr, __MODULE__)
+
     case Redix.start_link(redis_opts) do
       {:ok, conn} ->
         {:ok, %{conn: conn}}
+
       {:error, _reason} ->
         {:stop, :failed_to_connect}
     end
@@ -37,35 +39,39 @@ defmodule GraphqlApiRtr.RedisCache do
   # Server-side handling of set command
   @impl true
   def handle_call({:set, key, value}, _from, state) do
+    start_time = System.monotonic_time()
     result = Redix.command(state.conn, ["SET", key, value])
+    duration = System.monotonic_time() - start_time
+    :telemetry.execute([:graphql_api_rtr, :cache, :put], %{duration: duration / 1_000_000}, %{key: key})
     {:reply, result, state}
   end
 
-  # Server-side handling of get command
   @impl true
   def handle_call({:get, key}, _from, state) do
     start_time = System.monotonic_time()
     result = handle_redis_get(state.conn, key)
     duration = System.monotonic_time() - start_time
-    :telemetry.execute([:my_app, :cache, :get], %{duration: duration}, %{key: key})
+    :telemetry.execute([:graphql_api_rtr, :cache, :get], %{duration: duration / 1_000_000}, %{key: key})
     {:reply, result, state}
   end
 
-  # Server-side handling of put command
   @impl true
   def handle_call({:put, key, ttl, value}, _from, state) do
     start_time = System.monotonic_time()
     result = Redix.command(state.conn, ["SET", key, value, "EX", ttl])
     duration = System.monotonic_time() - start_time
-    :telemetry.execute([:my_app, :cache, :put], %{duration: duration}, %{key: key})
+    :telemetry.execute([:graphql_api_rtr, :cache, :put], %{duration: duration / 1_000_000}, %{key: key})
     {:reply, result, state}
   end
 
-  # Helper function to handle Redis GET command with telemetry
   defp handle_redis_get(conn, key) do
     case Redix.command(conn, ["GET", key]) do
-      {:ok, nil} -> nil
-      {:ok, value} -> value
+      {:ok, nil} ->
+        nil
+
+      {:ok, value} ->
+        value
+
       {:error, reason} ->
         Logger.error("Failed to get key #{key} from Redis: #{inspect(reason)}")
         nil
